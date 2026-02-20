@@ -9,9 +9,10 @@ const SECRET_KEY = process.env.JWT_SECRET || 'your_secret_key'; // Use your actu
 const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 const { User } = require('./models');
-const { connectDB } = require('./config/db');
+const { connectDB, sequelize } = require('./config/db');
 
 const app = express();
+app.set('trust proxy', 1);
 const imageMimeTypes = [
   'image/jpeg', 'image/png', 'image/gif', 'image/bmp', 'image/webp', 'image/svg+xml', 'image/tiff', 'image/x-icon', 'image/vnd.microsoft.icon'
 ];
@@ -44,6 +45,8 @@ const corsOptions = {
       'https://www.pas-india.com',
       'http://pas-india.com',
       'http://www.pas-india.com',
+      'https://pas-website.onrender.com',
+      'http://pas-website.onrender.com',
       'http://localhost:3000',
       'http://localhost:5001'
     ];
@@ -251,6 +254,9 @@ async function startServer() {
   try {
     // Connect to PostgreSQL
     await connectDB();
+    // Create/sync tables in Render Postgres (enquiry_otp_verifications, enquiries, etc.)
+    await sequelize.sync({ alter: true });
+    console.log('✅ Tables synced');
     
     // Start Express server
     const server = app.listen(PORT, '0.0.0.0', () => {
