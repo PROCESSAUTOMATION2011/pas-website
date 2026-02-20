@@ -1,26 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import VerticalHeader from '../components/VerticalHeader';
-
-// API base: REACT_APP_API_URL, or in production use PUBLIC_URL, or detect /en (or other subpath) from current path
-function getApiBase() {
-  if (process.env.REACT_APP_API_URL !== undefined && process.env.REACT_APP_API_URL !== '') {
-    return process.env.REACT_APP_API_URL;
-  }
-  if (process.env.NODE_ENV !== 'production') {
-    return 'http://localhost:5001';
-  }
-  // Build-time base (set "homepage": "/en" in package.json when deployed at pas-india.com/en)
-  if (process.env.PUBLIC_URL) {
-    return process.env.PUBLIC_URL;
-  }
-  // Runtime: if app is at /en, use /en so API calls go to /en/api/...
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/en')) {
-    return '/en';
-  }
-  return '';
-}
-const API_BASE = getApiBase();
+import API_BASE from '../utils/api';
 
 export default function EnquiryPage() {
   const [formData, setFormData] = useState({

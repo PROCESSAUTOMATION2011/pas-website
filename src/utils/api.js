@@ -1,21 +1,15 @@
-// Utility for making API requests with JWT auth
-function getApiBase() {
-  if (process.env.REACT_APP_API_URL !== undefined && process.env.REACT_APP_API_URL !== '') {
-    return process.env.REACT_APP_API_URL;
-  }
-  if (process.env.NODE_ENV !== 'production') {
-    return 'http://localhost:5001';
-  }
-  if (process.env.PUBLIC_URL) return process.env.PUBLIC_URL;
-  if (typeof window !== 'undefined' && window.location.pathname.startsWith('/en')) {
-    return '/en';
-  }
-  return '';
-}
-const BASE_URL = getApiBase();
+// Single source for API base URL. Set REACT_APP_API_BASE_URL in env (Render, MilesWeb, etc.).
+// Dev: unset = localhost:5001. Prod: unset = same-origin ('').
+const API_BASE =
+  process.env.REACT_APP_API_BASE_URL !== undefined && process.env.REACT_APP_API_BASE_URL !== ''
+    ? process.env.REACT_APP_API_BASE_URL.replace(/\/$/, '')
+    : process.env.NODE_ENV !== 'production'
+      ? 'http://localhost:5001'
+      : '';
+
+export default API_BASE;
 
 export async function apiRequest(path, options = {}) {
-  // Rewrite legacy login endpoint to new one
   if (path === '/login') path = '/api/auth/login';
   const token = localStorage.getItem('jwt_token');
   const headers = options.headers || {};
@@ -23,7 +17,7 @@ export async function apiRequest(path, options = {}) {
   if (!headers['Content-Type'] && !(options.body instanceof FormData)) {
     headers['Content-Type'] = 'application/json';
   }
-  const response = await fetch(`${BASE_URL}${path}`, {
+  const response = await fetch(`${API_BASE}${path}`, {
     ...options,
     headers,
   });
@@ -33,4 +27,3 @@ export async function apiRequest(path, options = {}) {
   }
   return response.json().catch(() => ({}));
 }
-// Usage: await apiRequest('/api/tasks', { method: 'GET' }) 
