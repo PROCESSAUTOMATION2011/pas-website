@@ -1,0 +1,145 @@
+{
+  "info": {
+    "_postman_id": "e6e1b1b0-0000-0000-0000-employee-reports-api",
+    "name": "Employee Report Management System API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:5000" },
+    { "key": "jwt_token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login (Admin/Employee)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/api/auth/login", "host": [ "{{base_url}}" ], "path": [ "api", "auth", "login" ] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Employee",
+      "item": [
+        {
+          "name": "Submit Task",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "company_name", "value": "ABC Ltd", "type": "text" },
+                { "key": "visit_aim", "value": "Product Demo", "type": "text" },
+                { "key": "task_type", "value": "Sales", "type": "text" },
+                { "key": "lead_status", "value": "Prospect", "type": "text" },
+                { "key": "task_status", "value": "Finished", "type": "text" },
+                { "key": "visit_date", "value": "2025-07-05", "type": "text" },
+                { "key": "location_name", "value": "Chennai", "type": "text" },
+                { "key": "geo_photo", "type": "file" },
+                { "key": "document", "type": "file" }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/api/tasks", "host": [ "{{base_url}}" ], "path": [ "api", "tasks" ] }
+          },
+          "response": []
+        },
+        {
+          "name": "Smart Search",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{jwt_token}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/tasks/search?q=demo",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "tasks", "search" ],
+              "query": [ { "key": "q", "value": "demo" } ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Admin",
+      "item": [
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": { "raw": "{{base_url}}/api/admin/tasks", "host": [ "{{base_url}}" ], "path": [ "api", "admin", "tasks" ] }
+          },
+          "response": []
+        },
+        {
+          "name": "Fuzzy Search",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": {
+              "raw": "{{base_url}}/api/admin/tasks/search?q=demo",
+              "host": [ "{{base_url}}" ],
+              "path": [ "api", "admin", "tasks", "search" ],
+              "query": [ { "key": "q", "value": "demo" } ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Analytics",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": { "raw": "{{base_url}}/api/admin/analytics", "host": [ "{{base_url}}" ], "path": [ "api", "admin", "analytics" ] }
+          },
+          "response": []
+        },
+        {
+          "name": "File Download",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": { "raw": "{{base_url}}/api/admin/file/1", "host": [ "{{base_url}}" ], "path": [ "api", "admin", "file", "1" ] }
+          },
+          "response": []
+        },
+        {
+          "name": "Flag File",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Authorization", "value": "Bearer {{jwt_token}}" } ],
+            "url": { "raw": "{{base_url}}/api/admin/file/1/flag", "host": [ "{{base_url}}" ], "path": [ "api", "admin", "file", "1", "flag" ] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/api/health", "host": [ "{{base_url}}" ], "path": [ "api", "health" ] }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+} 

@@ -1,0 +1,64 @@
+{
+  "name": "pas-website",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@headlessui/react": "^1.7.15",
+    "@heroicons/react": "^2.0.18",
+    "axios": "^1.10.0",
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
+    "chart.js": "^4.5.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.0.1",
+    "express": "^4.18.2",
+    "express-rate-limit": "^8.2.1",
+    "framer-motion": "^10.16.4",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^7.0.4",
+    "pg": "^8.11.1",
+    "piexifjs": "^1.0.6",
+    "react": "^18.2.0",
+    "react-chartjs-2": "^5.3.0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.12.0",
+    "react-router-dom": "^6.22.3",
+    "react-scripts": "^5.0.1",
+    "react-select": "^5.10.1",
+    "sequelize": "^6.32.1",
+    "swiper": "^11.2.10"
+  },
+  "devDependencies": {
+    "autoprefixer": "^10.4.14",
+    "png-to-ico": "^3.0.1",
+    "postcss": "^8.4.24",
+    "sharp": "^0.34.5",
+    "tailwindcss": "^3.4.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "postbuild": "node -e \"require('fs').copyFileSync('public/.htaccess','build/.htaccess')\"",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "server": "node server.js",
+    "dev": "npm run build && npm run server",
+    "favicon": "node scripts/generate-favicon.mjs",
+    "check-enquiry-email": "node scripts/check-enquiry-email.js"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
