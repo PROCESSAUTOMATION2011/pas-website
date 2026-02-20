@@ -18,10 +18,10 @@ async function verifyOTPHash(otp, hash) {
   return bcrypt.compare(otp, hash);
 }
 
-// Send OTP via Email
-async function sendOTPEmail(email, otp) {
+// Send OTP via Email (non-blocking; returns a promise, do not await in caller)
+function sendOTPEmail(email, otp) {
   if (!process.env.ENQUIRY_MAIL_USER || !process.env.ENQUIRY_MAIL_PASS) {
-    throw new Error('Email credentials not configured');
+    return Promise.reject(new Error('Email credentials not configured'));
   }
 
   const transporter = nodemailer.createTransport({
@@ -49,7 +49,7 @@ async function sendOTPEmail(email, otp) {
     `,
   };
 
-  await transporter.sendMail(mailOptions);
+  return transporter.sendMail(mailOptions);
 }
 
 // Send OTP
@@ -112,22 +112,17 @@ exports.sendOTP = async (req, res) => {
       verified: false
     });
 
-    // Send OTP via email (if email provided)
+    // Send OTP via email (if email provided) — fire-and-forget; do not block response
     if (email) {
-      try {
-        console.log(`[OTP SEND] Sending OTP email to: ${email}`);
-        await sendOTPEmail(email, otp);
-        console.log(`[OTP SEND] OTP email sent successfully to: ${email}`);
-      } catch (emailError) {
-        console.error(`[OTP SEND] Failed to send OTP email to ${email}:`, emailError);
-        // Still return success - OTP is generated and stored
-        // In production, you might want to handle this differently
-      }
+      console.log(`[OTP SEND] Sending OTP email to: ${email}`);
+      sendOTPEmail(email, otp)
+        .then(() => console.log(`[OTP SEND] OTP email sent successfully to: ${email}`))
+        .catch((emailError) => console.error(`[OTP SEND] Failed to send OTP email to ${email}:`, emailError));
     } else {
       console.log(`[OTP SEND] No email provided, OTP generated but not sent`);
     }
 
-    // DO NOT send OTP in response for security
+    // Respond immediately; do not wait for email
     console.log(`[OTP SEND] Success for identifier: ${identifier}`);
     res.json({
       success: true,
