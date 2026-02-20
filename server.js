@@ -124,9 +124,6 @@ app.post('/api/employee/register', async (req, res) => {
   }
 });
 
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, 'build')));
-
 // Remove all code related to User, Task, authentication, admin, and employee APIs
 // Only keep public-facing endpoints and static file serving
 
@@ -236,21 +233,18 @@ if (BASE_PATH) {
   app.get(`${BASE_PATH}/api/health`, (req, res) => res.json({ status: 'ok' }));
 }
 
-// Catch-all handler: send back React's index.html file for any non-API routes
-app.get('*', (req, res) => {
-  const pathNormalized = req.path.replace(/\/$/, '') || '/';
-  const isApi = pathNormalized.startsWith('/api') || (BASE_PATH && pathNormalized.startsWith(`${BASE_PATH}/api`));
-  if (!isApi) {
+// Production: serve React build and SPA fallback (must be after all API routes)
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'build')));
+  app.get('*', (req, res) => {
     const indexPath = path.join(__dirname, 'build', 'index.html');
     if (fs.existsSync(indexPath)) {
       res.sendFile(indexPath);
     } else {
       res.status(500).send('Build folder not found. Please run "npm run build" first.');
     }
-  } else {
-    res.status(404).json({ message: 'API route not found' });
-  }
-});
+  });
+}
 
 // Initialize database connection and start server
 async function startServer() {
